@@ -1,9 +1,11 @@
+var mts = [];
+
 Level = function(){
   console.log("level");
   c = $("#canvas")[0];
   ctx = c.getContext("2d");
   
-  /*map = [
+  /*var map = [
       [0,0,0,0,0,0,0,0,0,0,0,0],
       [0,1,1,1,1,1,1,1,1,1,1,0],
       [0,1,1,1,1,1,1,1,1,1,1,0],
@@ -26,18 +28,19 @@ Level = function(){
       [0,1,1,1,1,0,1,1,1,1,1,1],
       [0,1,1,1,1,0,1,1,1,1,1,1],
       [0,1,1,1,1,1,0,1,1,1,1,1],
+      [1,1,0,1,1,1,0,1,1,1,1,1],
       [1,1,1,0,1,1,1,1,1,0,1,1]
     ];
   if((Math.round($(document).height()-150)/map.length) <= Math.round(($(document).width()-150)/map[0].length)){
-    tileSize = Math.round(($(document).height()-150)/map.length);
+    var tileSize = Math.round(($(document).height()-150)/map.length);
   }else{
-    tileSize = Math.round(($(document).width()-150)/map[0].length);
+    var tileSize = Math.round(($(document).width()-150)/map[0].length);
   }
-  CoinWars = new TileGame({
+  game = new Canvas2D({
     canvas: c,
     height: c.height,
     width: c.width,
-    bgImg: $("#hyperspace-binary")[0],
+    bg: $("#hyperspace-binary")[0],
     padding: padding = 20,
     map: map,
     /*tiles: {
@@ -59,30 +62,25 @@ Level = function(){
     }
   });
   
-  CoinWars.drawMap();
-  
   Program = function(opt){
-    _program = new CoinWars.Image({
-      img: opt.img,
-      color: opt.color,
-      col: opt.col,
-      row: opt.row
-    });
+    var _program = new game.Image(opt);
+    _program.width = tileSize;
+    _program.height = tileSize;
 		_program.moves = opt.moves;
 		_program.range = opt.range;
 		_program.maxSize = opt.maxSize;
     _program.curRow = function(){return _program.getPos()[0];}
     _program.curCol = function(){return _program.getPos()[1];}
-    trail = function(){
+    var trail = function(){
        
     }
 		_program.moveTiles = function(){
-		  moveTiles = [];
+		  var moveTiles = [];
 			for(tRow in map){
 				for(tCol in map[tRow]){
 					rowDif = Math.abs(tRow-_program.curRow());
 					colDif = Math.abs(tCol-_program.curCol());
-					if(rowDif+colDif <= _program.moves){
+					if(rowDif+colDif <= _program.moves && rowDif+colDif != 0){
 					  if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
 						  moveTiles.push([parseInt(tRow),parseInt(tCol)]);
 						}
@@ -92,7 +90,7 @@ Level = function(){
 			return moveTiles;
 		}
 		_program.attackTiles = function(){
-		  attackTiles = [];
+		  var attackTiles = [];
 			for(tRow in map){
 				for(tCol in map[tRow]){
 					rowDif = Math.abs(tRow-_program.curRow());
@@ -113,24 +111,24 @@ Level = function(){
       rightTile: map[_program.curRow()][_program.curCol()+1]
     }}
 		_program.setMoveListener = function(){
-			for(mt in mts){
-				mTile = mts[mt];
-				CoinWars.click(mTile, function(){
-					_program.changePos(mTile.getPos[0],mTile.getPos[1]);
-					console.log(mTile.getPos()[0],mTile.getPos()[1]);
-				});
+			for(i=0; i<mts.length; i++){
+				var mTile = mts[i];
+				mTile.onclick = function(){
+					_program.changePos(mTile.row, mTile.col);
+					console.log(mTile.row, mTile.col);
+				};
 			}
 		}
     return _program;
   }
   
-  /*audioBg = new CoinWars.Audio({
+  /*audioBg = new game.Audio({
     audio: $("#audio-bg")[0],
     auto: true, 
     loop: true
   });*/
   
-  /*evergreen = new CoinWars.Image({
+  /*var evergreen = new game.Image({
     img: $("#evergreen")[0],
     x: 5*tileSize + 5*tileMargin + padding,
     y: 5*tileSize + 5*tileMargin + padding
@@ -138,68 +136,96 @@ Level = function(){
   
   
   
-  spawnBlue1 = new CoinWars.Image({
+  var spawnBlue1 = new game.Image({
     img: $("#spawn-blue")[0],
+    bg: "#66ff66",
     col: 0,
     row: 0
   });
-  spawnBlue2 = new CoinWars.Image({
+  var spawnBlue2 = new game.Image({
     img: $("#spawn-blue")[0],
     col: 0,
     row: 1
   });
-  spawnBlue3 = new CoinWars.Image({
+  var spawnBlue3 = new game.Image({
     img: $("#spawn-blue")[0],
     col: 0,
     row: 2
   });
   
-  spawnRed1 = new CoinWars.Image({
+  var spawnRed1 = new game.Image({
     img: $("#spawn-red")[0],
     col: map[0].length-1,
     row: map.length-1
   });
-  spawnRed2 = new CoinWars.Image({
+  var spawnRed2 = new game.Image({
     img: $("#spawn-red")[0],
     col: map[0].length-1,
     row: map.length-2
   });
-  spawnRed3 = new CoinWars.Image({
+  var spawnRed3 = new game.Image({
     img: $("#spawn-red")[0],
     col: map[0].length-1,
     row: map.length-3
   });
   
-  chrome = new Program({
+  var chrome = new Program({
     img: $("#chrome")[0],
     color: "rgba(160,220,50,255)",
     moves: 2,
     range: 1,
     maxSize: 4,
     col: 1,
-    row: 1
-    //x: CoinWars.pixifyCoord(1),
-    //y: CoinWars.pixifyCoord(1)
+    row: 1,
+    onclick: function() {
+      console.log("chrome clicked");
+      for(var i=0; i<chrome.moveTiles().length; i++){
+        var moveTile = new game.Tile({
+          row: chrome.moveTiles()[i][0],
+          col: chrome.moveTiles()[i][1],
+          width: tileSize,
+          height: tileSize,
+          color: "rgba(255,255,255,.7)"
+        });
+        mts.push(moveTile);
+      }
+      chrome.setMoveListener();
+    }
+  });
+  
+  var processor = new Program({
+    img: $("#processor")[0],
+    color: "rgba(250,100,50,255)",
+    moves: 2,
+    range: 1,
+    maxSize: 4,
+    col: 10,
+    row: 7
   });
   
   //$(c).click(function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
-  CoinWars.keyDown(32, function(){audioBg.playOrPause();})
-  CoinWars.keyDown(37, function(){chrome.move(180,tileSize);});
-  CoinWars.keyDown(39, function(){chrome.move(0,tileSize);});
-  CoinWars.keyDown(38, function(){chrome.move(270,tileSize);});
-  CoinWars.keyDown(40, function(){chrome.move(90,tileSize);});
-  CoinWars.keyDown(68, function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
-  CoinWars.click(chrome, function(){
-    for(mTile in chrome.moveTiles()){
-      mt = new CoinWars.Tile({row:chrome.moveTiles()[mTile][0],col:chrome.moveTiles()[mTile][1],color:"rgba(255,255,255,.7)"});
-      mts.push(mt);
-			chrome.setMoveListener();
-    }
-  });
+  game.keyDown(32, function(){audioBg.playOrPause();})
+  game.keyDown(37, function(){chrome.move(180,tileSize);});
+  game.keyDown(39, function(){chrome.move(0,tileSize);});
+  game.keyDown(38, function(){chrome.move(270,tileSize);});
+  game.keyDown(40, function(){chrome.move(90,tileSize);});
+  game.keyDown(68, function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
 	
-//	MainMenu = new Menu({
-//		bg: "33ff33",
-//	});
+  var mainMenuBtn = new game.Button({
+    x: canvas.width - 200,
+		y: 0,
+		width: 200,
+		height: 50,
+		color: "#eee",
+		bg: "#111",
+		center: false,
+		centerText: false,
+		text: "Menu",
+		onclick: function(){
+		  game.exit();
+		  drawMainMenu();
+		}
+	});
 }
 
 

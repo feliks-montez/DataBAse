@@ -1,11 +1,12 @@
-MainMenu = function(){
+ActionsMenu = function(){
   c.width = width;
   c.height = height;
   
-  var Menu = new canvas2D({
+  var actionsMenu = new canvas2D({
 	  canvas: c,
 	  width: width,
-	  height: height
+	  height: height,
+	  bg: "#111ff"
 	});
 	
 	Menu.resetListeners("click");
