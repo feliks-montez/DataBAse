@@ -159,7 +159,7 @@ var Canvas2D = function(opt){
       return [row,col];
     }
     
-    _ent.changePos = function(col, row){
+    _ent.changePos = function(row, col){
       _ent.x = self.pixifyCoord(col);
       _ent.y = self.pixifyCoord(row);
       return [x,y];
@@ -350,7 +350,7 @@ var Canvas2D = function(opt){
 	    for (var i = 0; i < self.ents.length; i++) {
 	      var entity = self.ents[i];
 	      if (entity.onclick) {
-	        if (entity.checkCoordCollision(x, y)) { console.log(entity.bg);
+	        if (entity.checkCoordCollision(x, y)) {
 	          entity.onclick();
 	        }
 	      }

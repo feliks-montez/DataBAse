@@ -1,4 +1,5 @@
 var mts = [];
+var ats = [];
 
 Level = function(){
   console.log("level");
@@ -80,7 +81,7 @@ Level = function(){
 				for(tCol in map[tRow]){
 					rowDif = Math.abs(tRow-_program.curRow());
 					colDif = Math.abs(tCol-_program.curCol());
-					if(rowDif+colDif <= _program.moves && rowDif+colDif != 0){
+					if(rowDif+colDif <= _program.movesLeft && rowDif+colDif != 0){
 					  if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
 						  moveTiles.push([parseInt(tRow),parseInt(tCol)]);
 						}
@@ -95,7 +96,7 @@ Level = function(){
 				for(tCol in map[tRow]){
 					rowDif = Math.abs(tRow-_program.curRow());
 					colDif = Math.abs(tCol-_program.curCol());
-					if(rowDif+colDif <= _program.range){
+					if(rowDif+colDif <= _program.range && rowDif+colDif != 0){
 					  if(map[tRow][tCol] != 0){// && [tRow,tCol] != [_program.curRow(),_program.curCol()]){
 						  attackTiles.push([parseInt(tRow),parseInt(tCol)]);
 						}
@@ -104,21 +105,98 @@ Level = function(){
 			}
 			return attackTiles;
 	  }
-    _program.ajacentTiles = function(){return {
+    /*_program.adjacentTiles = function(){return {
       upTile: map[_program.curRow()-1][_program.curCol()],
       downTile: map[_program.curRow()+1][_program.curCol()],
       leftTile: map[_program.curRow()][_program.curCol()-1],
       rightTile: map[_program.curRow()][_program.curCol()+1]
-    }}
-		_program.setMoveListener = function(){
-			for(i=0; i<mts.length; i++){
-				var mTile = mts[i];
-				mTile.onclick = function(){
-					_program.changePos(mTile.row, mTile.col);
-					console.log(mTile.row, mTile.col);
-				};
+    }};
+    
+    _program.adjacentTiles = function(){
+      var adjacentTiles = [];
+      adjacentTiles.push([_program.curRow()-1,_program.curCol()]);
+      adjacentTiles.push([_program.curRow()+1,_program.curCol()]);
+      adjacentTiles.push([_program.curRow(),_program.curCol()-1]);
+      adjacentTiles.push([_program.curRow(),_program.curCol()+1]);
+      return adjacentTiles;
+    };*/
+    _program.adjTiles = function(){
+		  var adjTiles = [];
+			for(tRow in map){
+				for(tCol in map[tRow]){
+					rowDif = Math.abs(tRow-_program.curRow());
+					colDif = Math.abs(tCol-_program.curCol());
+					if(rowDif+colDif <= 1 && rowDif+colDif != 0){
+					  if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
+						  adjTiles.push([parseInt(tRow),parseInt(tCol)]);
+						}
+					}
+				}
 			}
+			return adjTiles;
 		}
+    
+    _program.drawMoveTiles = function() {
+      for (var i=0; i<mts.length; i++) {
+        var mt = mts[i];
+        var index = game.ents.indexOf(mt);
+        if (index > -1) {
+          game.ents.splice(index, 1);
+        }
+      }
+      mts = [];
+      
+      for(var i=0; i<_program.moveTiles().length; i++){
+        var moveTile = new game.Tile({
+          row: _program.moveTiles()[i][0],
+          col: _program.moveTiles()[i][1],
+          width: tileSize,
+          height: tileSize,
+          color: "rgba(255,255,255,.5)",
+        });
+        mts.push(moveTile);
+      }
+    };
+    
+    _program.drawAdjacentTiles = function(){
+      for (var i=0; i<ats.length; i++) {
+        var at = ats[i];
+        var index = game.ents.indexOf(at);
+        if (index > -1) {
+          game.ents.splice(index, 1);
+        }
+      }
+      ats = [];
+      
+      if (_program.movesLeft > 0) {
+        for(var i=0; i<_program.adjTiles().length; i++) {
+          var adjTile = new game.Tile({
+            row: _program.adjTiles()[i][0],
+            col: _program.adjTiles()[i][1],
+            width: tileSize,
+            height: tileSize,
+            color: "rgba(255,255,255,.5)",
+            onclick: function(){
+              _program.changePos(this.row, this.col);
+              _program.movesLeft--;
+              if (_program.movesLeft >= 0) {
+                _program.drawMoveTiles();
+                _program.drawAdjacentTiles();
+              }
+            }
+          });
+          ats.push(adjTile);
+        }
+      }
+    }
+    
+    _program.onclick = function() {
+      console.log(_program.movesLeft);
+      _program.movesLeft = _program.moves;
+      //_program.drawMoveTiles();
+      _program.drawAdjacentTiles();
+    };
+    
     return _program;
   }
   
@@ -176,21 +254,7 @@ Level = function(){
     range: 1,
     maxSize: 4,
     col: 1,
-    row: 1,
-    onclick: function() {
-      console.log("chrome clicked");
-      for(var i=0; i<chrome.moveTiles().length; i++){
-        var moveTile = new game.Tile({
-          row: chrome.moveTiles()[i][0],
-          col: chrome.moveTiles()[i][1],
-          width: tileSize,
-          height: tileSize,
-          color: "rgba(255,255,255,.7)"
-        });
-        mts.push(moveTile);
-			  chrome.setMoveListener();
-      }
-    }
+    row: 1
   });
   
   var processor = new Program({

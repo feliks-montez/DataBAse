@@ -159,7 +159,7 @@ var Canvas2D = function(opt){
       return [row,col];
     }
     
-    _ent.changePos = function(col, row){
+    _ent.changePos = function(row, col){
       _ent.x = self.pixifyCoord(col);
       _ent.y = self.pixifyCoord(row);
       return [x,y];
