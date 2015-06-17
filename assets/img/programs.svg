@@ -24,15 +24,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.12374369"
-     inkscape:cx="-129.83491"
-     inkscape:cy="-21.005435"
+     inkscape:zoom="0.49497476"
+     inkscape:cx="-1973.1705"
+     inkscape:cy="293.28719"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1301"
-     inkscape:window-height="744"
-     inkscape:window-x="65"
+     inkscape:window-width="1366"
+     inkscape:window-height="682"
+     inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
@@ -56,31 +56,38 @@
        inkscape:export-filename="/home/brant/Desktop/Coin_Wars/assets/img/spawn-blue.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"
-       style="stroke:none">
+       style="stroke:none"
+       transform="matrix(0.92715234,0,0,0.92715234,-2567.5854,-181.42095)">
       <path
-         style="fill:#c8ffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#c8ffff;fill-opacity:1;stroke:none"
          d="m 202.85715,295.21933 431.42856,0 0,431.42856 -431.42856,0 z"
-         id="rect3766" />
+         id="rect3766"
+         inkscape:connector-curvature="0" />
       <path
-         style="fill:#c8ffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#c8ffff;fill-opacity:1;stroke:none"
          d="m 202.85715,295.21933 431.42856,0 0,431.42856 -431.42856,0 z"
-         id="rect3768" />
+         id="rect3768"
+         inkscape:connector-curvature="0" />
       <path
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;stroke:none"
          d="m 231.16611,323.52829 374.81064,0 0,374.81064 -374.81064,0 z"
-         id="rect3772" />
+         id="rect3772"
+         inkscape:connector-curvature="0" />
       <path
-         style="fill:#c8ffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#c8ffff;fill-opacity:1;stroke:none"
          d="m 259.47507,351.83725 318.19272,0 0,318.19272 -318.19272,0 z"
-         id="rect3774" />
+         id="rect3774"
+         inkscape:connector-curvature="0" />
       <path
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;stroke:none"
          d="m 287.78403,380.14621 261.5748,0 0,261.5748 -261.5748,0 z"
-         id="rect3776" />
+         id="rect3776"
+         inkscape:connector-curvature="0" />
       <path
-         style="fill:#c8ffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#c8ffff;fill-opacity:1;stroke:none"
          d="m 316.09299,408.45517 204.95688,0 0,204.95688 -204.95688,0 z"
-         id="rect3778" />
+         id="rect3778"
+         inkscape:connector-curvature="0" />
       <g
          transform="matrix(5.6676592,0,0,5.6676592,8930.7092,-1864.0417)"
          style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffb200;fill-opacity:1;stroke:none;font-family:Sans"
@@ -88,7 +95,8 @@
         <path
            d="m -1507.3477,407.702 0,10.95703 4.961,0 c 1.8359,1e-5 3.2552,-0.47525 4.2578,-1.42578 1.0026,-0.95051 1.5039,-2.30467 1.5039,-4.0625 0,-1.74477 -0.5013,-3.09243 -1.5039,-4.04297 -1.0026,-0.9505 -2.4219,-1.42576 -4.2578,-1.42578 l -4.961,0 m -3.9453,-3.24219 8.9063,0 c 3.2682,3e-5 5.7356,0.74222 7.4023,2.22656 1.6797,1.47138 2.5195,3.63284 2.5196,6.48438 -10e-5,2.87762 -0.8399,5.0521 -2.5196,6.52344 -1.6667,1.47136 -4.1341,2.20704 -7.4023,2.20703 l -4.961,0 0,11.71875 -3.9453,0 0,-29.16016"
            style="fill:#ff5555;stroke:none"
-           id="path3831" />
+           id="path3831"
+           inkscape:connector-curvature="0" />
       </g>
     </g>
     <flowRoot
@@ -107,37 +115,37 @@
        inkscape:export-xdpi="90"
        inkscape:export-filename="/home/brant/Desktop/Coin_Wars/assets/img/spawn-red.png"
        id="g3833"
-       transform="translate(484.87322,0)"
+       transform="matrix(0.92715234,0,0,0.92715234,-2086.3395,-181.42095)"
        style="stroke:none">
       <path
          id="path3835"
          d="m 202.85715,295.21933 431.42856,0 0,431.42856 -431.42856,0 z"
-         style="fill:#c8ffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#c8ffff;fill-opacity:1;stroke:none"
          inkscape:connector-curvature="0" />
       <path
          id="path3837"
          d="m 202.85715,295.21933 431.42856,0 0,431.42856 -431.42856,0 z"
-         style="fill:#ff5555;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#ff5555;fill-opacity:1;stroke:none"
          inkscape:connector-curvature="0" />
       <path
          id="path3839"
          d="m 231.16611,323.52829 374.81064,0 0,374.81064 -374.81064,0 z"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;stroke:none"
          inkscape:connector-curvature="0" />
       <path
          id="path3841"
          d="m 259.47507,351.83725 318.19272,0 0,318.19272 -318.19272,0 z"
-         style="fill:#ff5555;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#ff5555;fill-opacity:1;stroke:none"
          inkscape:connector-curvature="0" />
       <path
          id="path3843"
          d="m 287.78403,380.14621 261.5748,0 0,261.5748 -261.5748,0 z"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;stroke:none"
          inkscape:connector-curvature="0" />
       <path
          id="path3845"
          d="m 316.09299,408.45517 204.95688,0 0,204.95688 -204.95688,0 z"
-         style="fill:#ff5555;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:1"
+         style="fill:#ff5555;fill-opacity:1;stroke:none"
          inkscape:connector-curvature="0" />
       <g
          id="g3847"
@@ -149,6 +157,74 @@
            d="m -1507.3477,407.702 0,10.95703 4.961,0 c 1.8359,1e-5 3.2552,-0.47525 4.2578,-1.42578 1.0026,-0.95051 1.5039,-2.30467 1.5039,-4.0625 0,-1.74477 -0.5013,-3.09243 -1.5039,-4.04297 -1.0026,-0.9505 -2.4219,-1.42576 -4.2578,-1.42578 l -4.961,0 m -3.9453,-3.24219 8.9063,0 c 3.2682,3e-5 5.7356,0.74222 7.4023,2.22656 1.6797,1.47138 2.5195,3.63284 2.5196,6.48438 -10e-5,2.87762 -0.8399,5.0521 -2.5196,6.52344 -1.6667,1.47136 -4.1341,2.20704 -7.4023,2.20703 l -4.961,0 0,11.71875 -3.9453,0 0,-29.16016"
            inkscape:connector-curvature="0" />
       </g>
+    </g>
+    <g
+       id="g3104"
+       transform="translate(-3.6272783,-58.588846)"
+       inkscape:export-filename="/home/feliks/Programming/JavaScript/Canvas Games/DataBase/assets/img/processor.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="624.09833"
+         x="-2375.8787"
+         height="400"
+         width="400"
+         id="rect3077"
+         style="fill:none;fill-opacity:1;stroke:none" />
+      <g
+         transform="translate(-241.42645,0)"
+         id="g3094">
+        <path
+           inkscape:connector-curvature="0"
+           id="path3096"
+           d="m -2088.9954,716.70728 67.6803,0 0,23.2335 -67.6803,0 z"
+           style="fill:#cccccc;fill-opacity:1;stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path3098"
+           d="m -2088.9954,911.18451 67.6803,0 0,23.23351 -67.6803,0 z"
+           style="fill:#cccccc;fill-opacity:1;stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#cccccc;fill-opacity:1;stroke:none"
+           d="m -2088.9954,812.48158 67.6803,0 0,23.2335 -67.6803,0 z"
+           id="path3100" />
+      </g>
+      <g
+         transform="translate(-2,0)"
+         id="g3089">
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#cccccc;fill-opacity:1;stroke:none"
+           d="m -2088.9954,716.70728 67.6803,0 0,23.2335 -67.6803,0 z"
+           id="rect3081" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#cccccc;fill-opacity:1;stroke:none"
+           d="m -2088.9954,911.18451 67.6803,0 0,23.23351 -67.6803,0 z"
+           id="rect3083" />
+        <path
+           id="path3087"
+           d="m -2088.9954,812.48158 67.6803,0 0,23.2335 -67.6803,0 z"
+           style="fill:#cccccc;fill-opacity:1;stroke:none"
+           inkscape:connector-curvature="0" />
+      </g>
+      <rect
+         y="672.57544"
+         x="-2266.7925"
+         height="303.04578"
+         width="181.82745"
+         id="rect3079"
+         style="fill:#000000;fill-opacity:1;stroke:none" />
+      <path
+         d="m -2115.2595,726.08295 c 0,10.59994 -8.5929,19.19289 -19.1929,19.19289 -10.5999,0 -19.1929,-8.59295 -19.1929,-19.19289 0,-10.59995 8.593,-19.1929 19.1929,-19.1929 10.6,0 19.1929,8.59295 19.1929,19.1929 z"
+         sodipodi:ry="19.192898"
+         sodipodi:rx="19.192898"
+         sodipodi:cy="726.08295"
+         sodipodi:cx="-2134.4524"
+         id="path3102"
+         style="fill:#333333;fill-opacity:1;stroke:none"
+         sodipodi:type="arc" />
     </g>
   </g>
 </svg>

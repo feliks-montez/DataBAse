@@ -71,7 +71,7 @@ var Canvas2D = function(opt){
 	    if(entity.draw && entity.update != false){ //ok
 	        entity.draw();
 	    } else {
-        delete self.ents[ent];
+        self.ents.splice(ent, 1);
 	    }
 	  }
 	}
@@ -160,6 +160,8 @@ var Canvas2D = function(opt){
     }
     
     _ent.changePos = function(row, col){
+      _ent.row = row;
+      _ent.col = col;
       _ent.x = self.pixifyCoord(col);
       _ent.y = self.pixifyCoord(row);
       return [x,y];

@@ -71,7 +71,7 @@ var Canvas2D = function(opt){
 	    if(entity.draw && entity.update != false){ //ok
 	        entity.draw();
 	    } else {
-        delete self.ents[ent];
+        self.ents.splice(ent, 1);
 	    }
 	  }
 	}

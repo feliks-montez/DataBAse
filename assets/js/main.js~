@@ -1,5 +1,3 @@
-var c, ctx, tileMargin, tileSize;
-
 $(document).ready(function(){
   console.log("begin");
   c = $("#canvas")[0];

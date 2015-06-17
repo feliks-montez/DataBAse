@@ -1,5 +1,7 @@
 var mts = [];
 var ats = [];
+var atkts = [];
+var selectedProgram;
 
 Level = function(){
   console.log("level");
@@ -69,7 +71,13 @@ Level = function(){
     _program.height = tileSize;
 		_program.moves = opt.moves;
 		_program.range = opt.range;
+		_program.damage = opt.damage;
 		_program.maxSize = opt.maxSize;
+		if (opt.size != undefined) {
+		  _program.size = opt.size;
+		} else {
+		  _program.size = 1;
+		}
     _program.curRow = function(){return _program.getPos()[0];}
     _program.curCol = function(){return _program.getPos()[1];}
     var trail = function(){
@@ -137,15 +145,7 @@ Level = function(){
 		}
     
     _program.drawMoveTiles = function() {
-      for (var i=0; i<mts.length; i++) {
-        var mt = mts[i];
-        var index = game.ents.indexOf(mt);
-        if (index > -1) {
-          game.ents.splice(index, 1);
-        }
-      }
-      mts = [];
-      
+      _program.clearMoveTiles();
       for(var i=0; i<_program.moveTiles().length; i++){
         var moveTile = new game.Tile({
           row: _program.moveTiles()[i][0],
@@ -158,16 +158,19 @@ Level = function(){
       }
     };
     
-    _program.drawAdjacentTiles = function(){
-      for (var i=0; i<ats.length; i++) {
-        var at = ats[i];
-        var index = game.ents.indexOf(at);
+    _program.clearMoveTiles = function(){
+      for (var i=0; i<mts.length; i++) {
+        var mt = mts[i];
+        var index = game.ents.indexOf(mt);
         if (index > -1) {
           game.ents.splice(index, 1);
         }
       }
-      ats = [];
-      
+      mts = [];
+    };
+    
+    _program.drawAdjacentTiles = function(){
+      _program.clearAdjacentTiles();
       if (_program.movesLeft > 0) {
         for(var i=0; i<_program.adjTiles().length; i++) {
           var adjTile = new game.Tile({
@@ -187,18 +190,94 @@ Level = function(){
           });
           ats.push(adjTile);
         }
+      } else {
+        _program.drawAttackTiles();
       }
     }
     
+    _program.clearAdjacentTiles = function(){
+      for (var i=0; i<ats.length; i++) {
+        var at = ats[i];
+        var index = game.ents.indexOf(at);
+        if (index > -1) {
+          game.ents.splice(index, 1);
+        }
+      }
+      ats = [];
+    };
+    
+    _program.drawAttackTiles = function(){
+      _program.clearMoveTiles();
+      _program.clearAdjacentTiles();
+      _program.clearAttackTiles();
+      for(var i=0; i<_program.attackTiles().length; i++) {
+        var atkTile = new game.Tile({
+          row: _program.attackTiles()[i][0],
+          col: _program.attackTiles()[i][1],
+          width: tileSize,
+          height: tileSize,
+          color: "rgba(255,60,60,.5)",
+          onclick: function(){
+            attack(this);
+          }
+        });
+        atkts.push(atkTile);
+      }
+    }
+    
+    _program.clearAttackTiles = function(){
+      for (var i=0; i<atkts.length; i++) {
+        var atkt = atkts[i];
+        var index = game.ents.indexOf(atkt);
+        if (index > -1) {
+          game.ents.splice(index, 1);
+        }
+      }
+      atkts = [];
+    };
+    
     _program.onclick = function() {
-      console.log(_program.movesLeft);
-      _program.movesLeft = _program.moves;
-      _program.drawMoveTiles();
-      _program.drawAdjacentTiles();
+      if (atkts.length == 0) { // no attack tiles
+        if (selectedProgram == _program) {
+          _program.drawAttackTiles();
+        } else {
+          selectedProgram = _program
+          _program.movesLeft = _program.moves;
+          _program.drawMoveTiles();
+          _program.drawAdjacentTiles();
+        }
+      } else { // attack tiles present
+        if (selectedProgram == _program) {
+          _program.clearAttackTiles();
+          selectedProgram = null;
+        }// else {
+//          _program.size -= selectedProgram.damage;
+//          if (_program.size <= 0) {
+//            _program.destroy();
+//          }
+//        }
+      }
     };
     
     return _program;
   }
+  
+  var attack = function(tile) {
+      var row = tile.row;
+      var col = tile.col;
+      for (var i=0; i<game.ents.length; i++) {
+        var ent = game.ents[i];
+        //console.log(ent);
+        if (ent.size && ent.row == row && ent.col == col) {
+          ent.size -= selectedProgram.damage;
+          if (ent.size <= 0) {
+            ent.destroy();
+          }
+        }
+      }
+      selectedProgram.clearAttackTiles();
+      selectedProgram = null;
+    };
   
   /*audioBg = new game.Audio({
     audio: $("#audio-bg")[0],
@@ -247,32 +326,36 @@ Level = function(){
     row: map.length-3
   });
   
-  var chrome = new Program({
+  chrome = new Program({
     img: $("#chrome")[0],
     color: "rgba(160,220,50,255)",
-    moves: 2,
+    moves: 1,
     range: 2,
+    damage: 1,
     maxSize: 2,
     col: 1,
     row: 1
   });
   
-  var processor = new Program({
+  processor = new Program({
     img: $("#processor")[0],
     color: "rgba(250,100,50,255)",
     moves: 3,
     range: 1,
+    damage: 1,
     maxSize: 1,
     col: 10,
     row: 7
   });
   
-  var hadoop = new Program({
+  hadoop = new Program({
     img: $("#hadoop")[0],
     color: "rgba(60,60,220,255)",
     moves: 2,
     range: 1,
+    damage: 2,
     maxSize: 30,
+    size: 3,
     col: 6,
     row: 3
   });
@@ -298,6 +381,23 @@ Level = function(){
 		onclick: function(){
 		  game.exit();
 		  drawMainMenu();
+		}
+	});
+	
+	var attackBtn = new game.Button({
+    x: canvas.width - 200,
+		y: 50,
+		width: 200,
+		height: 50,
+		color: "#eee",
+		bg: "#111",
+		center: false,
+		centerText: false,
+		text: "ATTACK!!!",
+		onclick: function(){
+		  selectedProgram.clearMoveTiles();
+		  selectedProgram.clearAdjacentTiles();
+		  selectedProgram.drawAttackTiles();
 		}
 	});
 }

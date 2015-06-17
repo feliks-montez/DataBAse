@@ -46,7 +46,7 @@ function drawMainMenu(){
 		bg: "#111",
 		center: true,
 		text: "Help",
-		onclick: function() {console.log("Help!")}
+		onclick: function() {alert("Help!")}
 	});
 }
 
