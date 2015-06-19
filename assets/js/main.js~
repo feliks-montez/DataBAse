@@ -8,7 +8,7 @@ $(document).ready(function(){
   game = new Canvas2D({
     canvas: c,
     height: c.height,
-    width: c.widt
+    width: c.width
   });
 		
 	drawMainMenu();

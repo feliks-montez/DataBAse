@@ -4,7 +4,7 @@ var atkts = [];
 var selectedProgram;
 
 Level = function(){
-  console.log("level");
+  //console.log("level");
   c = $("#canvas")[0];
   ctx = c.getContext("2d");
   
@@ -22,7 +22,6 @@ Level = function(){
       [0,1,1,1,1,1,1,1,1,1,1,0],
       [0,0,0,0,0,0,0,0,0,0,0,0]
     ];*/
-  
   var map = [
       [1,1,1,1,1,1,0,0,1,1,0,1],
       [1,1,1,0,1,1,1,0,0,1,1,1],
@@ -33,19 +32,20 @@ Level = function(){
       [0,1,1,1,1,1,0,1,1,1,1,1],
       [1,1,0,1,1,1,0,1,1,1,1,1],
       [1,1,1,0,1,1,1,1,1,0,1,1]
-    ];
+    ]
+  
   if((Math.round($(document).height()-150)/map.length) <= Math.round(($(document).width()-150)/map[0].length)){
     var tileSize = Math.round(($(document).height()-150)/map.length);
   }else{
     var tileSize = Math.round(($(document).width()-150)/map[0].length);
   }
-  game = new Canvas2D({
-    canvas: c,
-    height: c.height,
-    width: c.width,
+  
+  gameScene = new game.Scene({
+    type: "tiles",
     bg: $("#hyperspace-binary")[0],
     padding: padding = 20,
     map: map,
+    width: c.width - 200,
     /*tiles: {
       stroke: {color:"rgba(0,0,0,.3)",thickness:3},
       margin: tileMargin = 0,
@@ -55,7 +55,7 @@ Level = function(){
       2: {perm:"pass",color:"rgba(130,130,0,255)"},
       3: {perm:"block",color:"rgba(60,60,160,255)"}
     }*/
-    tiles: {
+    tile: {
       stroke: {color:"rgba(0,0,0,.3)",thickness:3},
       margin: tileMargin = 3,
       size: tileSize,
@@ -65,54 +65,59 @@ Level = function(){
     }
   });
   
-  Program = function(opt){
-    var _program = new game.Image(opt);
-    _program.width = tileSize;
-    _program.height = tileSize;
-		_program.moves = opt.moves;
-		_program.range = opt.range;
-		_program.damage = opt.damage;
-		_program.maxSize = opt.maxSize;
-		if (opt.size != undefined) {
-		  _program.size = opt.size;
-		} else {
-		  _program.size = 1;
-		}
-    _program.curRow = function(){return _program.getPos()[0];}
-    _program.curCol = function(){return _program.getPos()[1];}
-    var trail = function(){
-       
+  Program = gameScene.Image.extend(function(opt){
+    var _program = this;
+    this.constructor = function(opt) {
+      this.super(opt);
+      _program.width = tileSize;
+      _program.height = tileSize;
+		  _program.moves = opt.moves;
+		  _program.range = opt.range;
+		  _program.damage = opt.damage;
+		  _program.maxSize = opt.maxSize;
+		  if (opt.size != undefined) {
+		    _program.size = opt.size;
+		  } else {
+		    _program.size = 1;
+		  }
+      _program.curRow = function(){return _program.getPos()[0];}
+      _program.curCol = function(){return _program.getPos()[1];}
+      var trail = function(){
+         
+      }
+      return _program;
     }
-		_program.moveTiles = function(){
-		  var moveTiles = [];
-			for(tRow in map){
-				for(tCol in map[tRow]){
-					rowDif = Math.abs(tRow-_program.curRow());
-					colDif = Math.abs(tCol-_program.curCol());
-					if(rowDif+colDif <= _program.movesLeft && rowDif+colDif != 0){
-					  if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
-						  moveTiles.push([parseInt(tRow),parseInt(tCol)]);
-						}
-					}
-				}
-			}
-			return moveTiles;
-		}
-		_program.attackTiles = function(){
-		  var attackTiles = [];
-			for(tRow in map){
-				for(tCol in map[tRow]){
-					rowDif = Math.abs(tRow-_program.curRow());
-					colDif = Math.abs(tCol-_program.curCol());
-					if(rowDif+colDif <= _program.range && rowDif+colDif != 0){
-					  if(map[tRow][tCol] != 0){// && [tRow,tCol] != [_program.curRow(),_program.curCol()]){
-						  attackTiles.push([parseInt(tRow),parseInt(tCol)]);
-						}
-					}
-				}
-			}
-			return attackTiles;
+    
+    _program.moveTiles = function(){
+	    var moveTiles = [];
+		  for(tRow in map){
+			  for(tCol in map[tRow]){
+				  rowDif = Math.abs(tRow-_program.curRow());
+				  colDif = Math.abs(tCol-_program.curCol());
+				  if(rowDif+colDif <= _program.movesLeft && rowDif+colDif != 0){
+				    if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
+					    moveTiles.push([parseInt(tRow),parseInt(tCol)]);
+					  }
+				  }
+			  }
+		  }
+		  return moveTiles;
 	  }
+	  _program.attackTiles = function(){
+	    var attackTiles = [];
+		  for(tRow in map){
+			  for(tCol in map[tRow]){
+				  rowDif = Math.abs(tRow-_program.curRow());
+				  colDif = Math.abs(tCol-_program.curCol());
+				  if(rowDif+colDif <= _program.range && rowDif+colDif != 0){
+				    if(map[tRow][tCol] != 0){// && [tRow,tCol] != [_program.curRow(),_program.curCol()]){
+					    attackTiles.push([parseInt(tRow),parseInt(tCol)]);
+					  }
+				  }
+			  }
+		  }
+		  return attackTiles;
+    }
     /*_program.adjacentTiles = function(){return {
       upTile: map[_program.curRow()-1][_program.curCol()],
       downTile: map[_program.curRow()+1][_program.curCol()],
@@ -129,25 +134,25 @@ Level = function(){
       return adjacentTiles;
     };*/
     _program.adjTiles = function(){
-		  var adjTiles = [];
-			for(tRow in map){
-				for(tCol in map[tRow]){
-					rowDif = Math.abs(tRow-_program.curRow());
-					colDif = Math.abs(tCol-_program.curCol());
-					if(rowDif+colDif <= 1 && rowDif+colDif != 0){
-					  if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
-						  adjTiles.push([parseInt(tRow),parseInt(tCol)]);
-						}
-					}
-				}
-			}
-			return adjTiles;
-		}
+	    var adjTiles = [];
+		  for(tRow in map){
+			  for(tCol in map[tRow]){
+				  rowDif = Math.abs(tRow-_program.curRow());
+				  colDif = Math.abs(tCol-_program.curCol());
+				  if(rowDif+colDif <= 1 && rowDif+colDif != 0){
+				    if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
+					    adjTiles.push([parseInt(tRow),parseInt(tCol)]);
+					  }
+				  }
+			  }
+		  }
+		  return adjTiles;
+	  }
     
     _program.drawMoveTiles = function() {
       _program.clearMoveTiles();
       for(var i=0; i<_program.moveTiles().length; i++){
-        var moveTile = new game.Tile({
+        var moveTile = new gameScene.Tile({
           row: _program.moveTiles()[i][0],
           col: _program.moveTiles()[i][1],
           width: tileSize,
@@ -161,9 +166,9 @@ Level = function(){
     _program.clearMoveTiles = function(){
       for (var i=0; i<mts.length; i++) {
         var mt = mts[i];
-        var index = game.ents.indexOf(mt);
+        var index = gameScene.ents.indexOf(mt);
         if (index > -1) {
-          game.ents.splice(index, 1);
+          gameScene.ents.splice(index, 1);
         }
       }
       mts = [];
@@ -173,7 +178,7 @@ Level = function(){
       _program.clearAdjacentTiles();
       if (_program.movesLeft > 0) {
         for(var i=0; i<_program.adjTiles().length; i++) {
-          var adjTile = new game.Tile({
+          var adjTile = new gameScene.Tile({
             row: _program.adjTiles()[i][0],
             col: _program.adjTiles()[i][1],
             width: tileSize,
@@ -198,9 +203,9 @@ Level = function(){
     _program.clearAdjacentTiles = function(){
       for (var i=0; i<ats.length; i++) {
         var at = ats[i];
-        var index = game.ents.indexOf(at);
+        var index = gameScene.ents.indexOf(at);
         if (index > -1) {
-          game.ents.splice(index, 1);
+          gameScene.ents.splice(index, 1);
         }
       }
       ats = [];
@@ -211,7 +216,7 @@ Level = function(){
       _program.clearAdjacentTiles();
       _program.clearAttackTiles();
       for(var i=0; i<_program.attackTiles().length; i++) {
-        var atkTile = new game.Tile({
+        var atkTile = new gameScene.Tile({
           row: _program.attackTiles()[i][0],
           col: _program.attackTiles()[i][1],
           width: tileSize,
@@ -228,9 +233,9 @@ Level = function(){
     _program.clearAttackTiles = function(){
       for (var i=0; i<atkts.length; i++) {
         var atkt = atkts[i];
-        var index = game.ents.indexOf(atkt);
+        var index = gameScene.ents.indexOf(atkt);
         if (index > -1) {
-          game.ents.splice(index, 1);
+          gameScene.ents.splice(index, 1);
         }
       }
       atkts = [];
@@ -250,23 +255,16 @@ Level = function(){
         if (selectedProgram == _program) {
           _program.clearAttackTiles();
           selectedProgram = null;
-        }// else {
-//          _program.size -= selectedProgram.damage;
-//          if (_program.size <= 0) {
-//            _program.destroy();
-//          }
-//        }
+        }
       }
     };
-    
-    return _program;
-  }
+  });
   
   var attack = function(tile) {
       var row = tile.row;
       var col = tile.col;
-      for (var i=0; i<game.ents.length; i++) {
-        var ent = game.ents[i];
+      for (var i=0; i<gameScene.ents.length; i++) {
+        var ent = gameScene.ents[i];
         //console.log(ent);
         if (ent.size && ent.row == row && ent.col == col) {
           ent.size -= selectedProgram.damage;
@@ -293,34 +291,34 @@ Level = function(){
   
   
   
-  var spawnBlue1 = new game.Image({
+  var spawnBlue1 = new gameScene.Image({
     img: $("#spawn-blue")[0],
     bg: "#66ff66",
     col: 0,
     row: 0
   });
-  var spawnBlue2 = new game.Image({
+  var spawnBlue2 = new gameScene.Image({
     img: $("#spawn-blue")[0],
     col: 0,
     row: 1
   });
-  var spawnBlue3 = new game.Image({
+  var spawnBlue3 = new gameScene.Image({
     img: $("#spawn-blue")[0],
     col: 0,
     row: 2
   });
   
-  var spawnRed1 = new game.Image({
+  var spawnRed1 = new gameScene.Image({
     img: $("#spawn-red")[0],
     col: map[0].length-1,
     row: map.length-1
   });
-  var spawnRed2 = new game.Image({
+  var spawnRed2 = new gameScene.Image({
     img: $("#spawn-red")[0],
     col: map[0].length-1,
     row: map.length-2
   });
-  var spawnRed3 = new game.Image({
+  var spawnRed3 = new gameScene.Image({
     img: $("#spawn-red")[0],
     col: map[0].length-1,
     row: map.length-3
@@ -361,15 +359,23 @@ Level = function(){
   });
   
   //$(c).click(function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
-  game.keyDown(32, function(){audioBg.playOrPause();})
-  game.keyDown(37, function(){chrome.move(180,tileSize);});
-  game.keyDown(39, function(){chrome.move(0,tileSize);});
-  game.keyDown(38, function(){chrome.move(270,tileSize);});
-  game.keyDown(40, function(){chrome.move(90,tileSize);});
-  game.keyDown(68, function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
+//  game.keyDown(32, function(){audioBg.playOrPause();})
+//  game.keyDown(37, function(){chrome.move(180,tileSize);});
+//  game.keyDown(39, function(){chrome.move(0,tileSize);});
+//  game.keyDown(38, function(){chrome.move(270,tileSize);});
+//  game.keyDown(40, function(){chrome.move(90,tileSize);});
+//  game.keyDown(68, function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
+  
+  sideMenu = new game.Scene({
+    x: width-200,
+    y: 0,
+    width: 200,
+    height: height,
+    bg: "#111"
+  });
 	
-  var mainMenuBtn = new game.Button({
-    x: canvas.width - 200,
+  var mainMenuBtn = new sideMenu.Button({
+    x: 0,
 		y: 0,
 		width: 200,
 		height: 50,
@@ -379,13 +385,14 @@ Level = function(){
 		centerText: false,
 		text: "Menu",
 		onclick: function(){
-		  game.exit();
+		  gameScene.destroy();
+		  sideMenu.destroy();
 		  drawMainMenu();
 		}
 	});
 	
-	var attackBtn = new game.Button({
-    x: canvas.width - 200,
+	var attackBtn = new sideMenu.Button({
+    x: 0,
 		y: 50,
 		width: 200,
 		height: 50,
@@ -401,5 +408,3 @@ Level = function(){
 		}
 	});
 }
-
-

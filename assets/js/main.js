@@ -1,9 +1,12 @@
+var game;
 $(document).ready(function(){
-  console.log("begin");
+  //console.log("begin");
   c = $("#canvas")[0];
   ctx = c.getContext("2d");
-  width = 1000;
-  height = 600;
+  c.width = 1000;
+  c.height = 600;
+  width = c.width;
+  height = c.height;
   
   game = new Canvas2D({
     canvas: c,
@@ -16,17 +19,7 @@ $(document).ready(function(){
 });
 
 function drawMainMenu(){
-  /*if (! typeof level === "undefined"){
-    console.log("exiting level");
-    level.exit();
-    
-  } else if (typeof level === "undefined"){
-    console.log('level undefined');
-  }*/
-  mainMenu = new Canvas2D.Scene({
-	  canvas: c,
-	  width: width,
-	  height: height,
+  mainMenu = new game.Scene({
 	  bg: $("#hyperspace-binary")[0]
 	});
 	
@@ -57,7 +50,6 @@ function drawMainMenu(){
 }
 
 function drawGame() {
-  mainMenu.exit();
-  console.log("start Level")
+  mainMenu.destroy();
   level = new Level();
 }
