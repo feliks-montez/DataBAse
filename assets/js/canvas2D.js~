@@ -203,16 +203,16 @@ var Canvas2D = function(opt){
       _ent.changePos = function(row, col){
         _ent.row = row;
         _ent.col = col;
-        _ent.x = self.pixifyCoord(col);
-        _ent.y = self.pixifyCoord(row);
+        _ent.x = _scene.pixifyCoord(col);
+        _ent.y = _scene.pixifyCoord(row);
         return [x,y];
       }
       
 //      _ent.changeGridPos = function(row, col){
 //        _ent.row = row;
 //        _ent.col = col;
-//        _ent.x = self.pixifyCoord(col);
-//        _ent.y = self.pixifyCoord(row);
+//        _ent.x = _scene.pixifyCoord(col);
+//        _ent.y = _scene.pixifyCoord(row);
 //        return [x,y];
 //      }
       
