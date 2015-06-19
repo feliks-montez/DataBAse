@@ -2,8 +2,14 @@ $(document).ready(function(){
   console.log("begin");
   c = $("#canvas")[0];
   ctx = c.getContext("2d");
-  width = 800;
+  width = 1000;
   height = 600;
+  
+  game = new Canvas2D({
+    canvas: c,
+    height: c.height,
+    width: c.width
+  });
 		
 	drawMainMenu();
 	//drawGame();
@@ -17,7 +23,7 @@ function drawMainMenu(){
   } else if (typeof level === "undefined"){
     console.log('level undefined');
   }*/
-  mainMenu = new Canvas2D({
+  mainMenu = new Canvas2D.Scene({
 	  canvas: c,
 	  width: width,
 	  height: height,

@@ -209,6 +209,7 @@ Level = function(){
     _program.drawAttackTiles = function(){
       _program.clearMoveTiles();
       _program.clearAdjacentTiles();
+      _program.clearAttackTiles();
       for(var i=0; i<_program.attackTiles().length; i++) {
         var atkTile = new game.Tile({
           row: _program.attackTiles()[i][0],
@@ -352,9 +353,9 @@ Level = function(){
     color: "rgba(60,60,220,255)",
     moves: 2,
     range: 1,
-    damage: 2,
+    damage: 2, // = number of sectors
     maxSize: 30,
-    size: 3,
+    size: 2,
     col: 6,
     row: 3
   });
@@ -394,7 +395,6 @@ Level = function(){
 		centerText: false,
 		text: "ATTACK!!!",
 		onclick: function(){
-		  intent = 2;
 		  selectedProgram.clearMoveTiles();
 		  selectedProgram.clearAdjacentTiles();
 		  selectedProgram.drawAttackTiles();
