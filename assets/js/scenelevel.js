@@ -4,7 +4,7 @@ var atkts = [];
 var selectedProgram;
 
 Level = function(){
-  console.log("level");
+  //console.log("level");
   c = $("#canvas")[0];
   ctx = c.getContext("2d");
   
@@ -39,11 +39,6 @@ Level = function(){
   }else{
     var tileSize = Math.round(($(document).width()-150)/map[0].length);
   }
-  game = new Canvas2D({
-    canvas: c,
-    height: c.height,
-    width: c.width,
-  });
   
   gameScene = new game.Scene({
     type: "tiles",
@@ -157,7 +152,7 @@ Level = function(){
     _program.drawMoveTiles = function() {
       _program.clearMoveTiles();
       for(var i=0; i<_program.moveTiles().length; i++){
-        var moveTile = new game.Tile({
+        var moveTile = new gameScene.Tile({
           row: _program.moveTiles()[i][0],
           col: _program.moveTiles()[i][1],
           width: tileSize,
@@ -171,9 +166,9 @@ Level = function(){
     _program.clearMoveTiles = function(){
       for (var i=0; i<mts.length; i++) {
         var mt = mts[i];
-        var index = game.ents.indexOf(mt);
+        var index = gameScene.ents.indexOf(mt);
         if (index > -1) {
-          game.ents.splice(index, 1);
+          gameScene.ents.splice(index, 1);
         }
       }
       mts = [];
@@ -183,7 +178,7 @@ Level = function(){
       _program.clearAdjacentTiles();
       if (_program.movesLeft > 0) {
         for(var i=0; i<_program.adjTiles().length; i++) {
-          var adjTile = new game.Tile({
+          var adjTile = new gameScene.Tile({
             row: _program.adjTiles()[i][0],
             col: _program.adjTiles()[i][1],
             width: tileSize,
@@ -208,9 +203,9 @@ Level = function(){
     _program.clearAdjacentTiles = function(){
       for (var i=0; i<ats.length; i++) {
         var at = ats[i];
-        var index = game.ents.indexOf(at);
+        var index = gameScene.ents.indexOf(at);
         if (index > -1) {
-          game.ents.splice(index, 1);
+          gameScene.ents.splice(index, 1);
         }
       }
       ats = [];
@@ -221,7 +216,7 @@ Level = function(){
       _program.clearAdjacentTiles();
       _program.clearAttackTiles();
       for(var i=0; i<_program.attackTiles().length; i++) {
-        var atkTile = new game.Tile({
+        var atkTile = new gameScene.Tile({
           row: _program.attackTiles()[i][0],
           col: _program.attackTiles()[i][1],
           width: tileSize,
@@ -238,9 +233,9 @@ Level = function(){
     _program.clearAttackTiles = function(){
       for (var i=0; i<atkts.length; i++) {
         var atkt = atkts[i];
-        var index = game.ents.indexOf(atkt);
+        var index = gameScene.ents.indexOf(atkt);
         if (index > -1) {
-          game.ents.splice(index, 1);
+          gameScene.ents.splice(index, 1);
         }
       }
       atkts = [];
@@ -260,12 +255,7 @@ Level = function(){
         if (selectedProgram == _program) {
           _program.clearAttackTiles();
           selectedProgram = null;
-        }// else {
-//          _program.size -= selectedProgram.damage;
-//          if (_program.size <= 0) {
-//            _program.destroy();
-//          }
-//        }
+        }
       }
     };
   });
@@ -273,8 +263,8 @@ Level = function(){
   var attack = function(tile) {
       var row = tile.row;
       var col = tile.col;
-      for (var i=0; i<game.ents.length; i++) {
-        var ent = game.ents[i];
+      for (var i=0; i<gameScene.ents.length; i++) {
+        var ent = gameScene.ents[i];
         //console.log(ent);
         if (ent.size && ent.row == row && ent.col == col) {
           ent.size -= selectedProgram.damage;
@@ -401,7 +391,7 @@ Level = function(){
 		}
 	});
 	
-	/*var attackBtn = new sideMenu.Button({
+	var attackBtn = new sideMenu.Button({
     x: 0,
 		y: 50,
 		width: 200,
@@ -416,7 +406,7 @@ Level = function(){
 		  selectedProgram.clearAdjacentTiles();
 		  selectedProgram.drawAttackTiles();
 		}
-	});*/
+	});
 }
 
 

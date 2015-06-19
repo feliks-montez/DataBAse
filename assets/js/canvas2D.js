@@ -42,9 +42,9 @@ var Canvas2D = function(opt){
 	    _base.height = opt.height || c.height;
 	    _base.bg = opt.bg;
 	    _base.update = opt.update || true;
-	    _base.onclick = opt.onclick || undefined;
+	    _base.onclick = opt.onclick || _base.onclick || undefined;
 		
-	    return _base;
+	    //return _base;
     }
     
     _base.move = function(ang,dist){
@@ -76,33 +76,6 @@ var Canvas2D = function(opt){
       self.drawEnts();
     }
     
-    _base.getPos = function(){
-      row = Math.round((_base.y-((_base.y/tiles.size)*tiles.margin))/tiles.size);
-      col = Math.round((_base.x-((_base.x/tiles.size)*tiles.margin))/tiles.size);
-      return [row,col];
-    }
-    
-    _base.getGridPos = function(){
-      row = Math.round((_base.y-((_base.y/tiles.size)*tiles.margin))/tiles.size);
-      col = Math.round((_base.x-((_base.x/tiles.size)*tiles.margin))/tiles.size);
-      return [row,col];
-    }
-    
-    _base.changePos = function(row, col){
-      _base.row = row;
-      _base.col = col;
-      _base.x = self.pixifyCoord(col);
-      _base.y = self.pixifyCoord(row);
-      return [x,y];
-    }
-    
-    _base.changeGridPos = function(row, col){
-      _base.row = row;
-      _base.col = col;
-      _base.x = self.pixifyCoord(col);
-      _base.y = self.pixifyCoord(row);
-      return [x,y];
-    }
 	
 	  _base.getBounds = function(){
       return [_base.x,_base.y,_base.x+_base.width,_base.y+_base.height];
@@ -200,18 +173,58 @@ var Canvas2D = function(opt){
         return _ent;
       }
       
+      
+      
       _ent.draw = function() {
-          var absx = _ent.x + _ent.scene.x;
-          var absy = _ent.y + _ent.scene.y;
-          if(_ent.bg){
-            if(typeof _ent.bg == "string"){
-              ctx.fillStyle = _ent.bg;
-		          ctx.fillRect(absx,absy,_ent.width,_ent.height);
-            }else{
-              ctx.drawImage(_ent.bg,absx,absy,_ent.width,_ent.height);
-            }
+        var absx = _ent.x + _ent.scene.x;
+        var absy = _ent.y + _ent.scene.y;
+        if(_ent.bg){
+          if(typeof _ent.bg == "string"){
+            ctx.fillStyle = _ent.bg;
+	          ctx.fillRect(absx,absy,_ent.width,_ent.height);
+          }else{
+            ctx.drawImage(_ent.bg,absx,absy,_ent.width,_ent.height);
           }
         }
+      }
+      
+      _ent.getPos = function(){
+        row = Math.round((_ent.y-((_ent.y/_ent.scene.tile.size)*_ent.scene.tile.margin))/_ent.scene.tile.size);
+        col = Math.round((_ent.x-((_ent.x/_ent.scene.tile.size)*_ent.scene.tile.margin))/_ent.scene.tile.size);
+        return [row,col];
+      }
+      
+//      _ent.getGridPos = function(){
+//        row = Math.round((_ent.y-((_ent.y/tiles.size)*tiles.margin))/tiles.size);
+//        col = Math.round((_ent.x-((_ent.x/tiles.size)*tiles.margin))/tiles.size);
+//        return [row,col];
+//      }
+      
+      _ent.changePos = function(row, col){
+        _ent.row = row;
+        _ent.col = col;
+        _ent.x = _scene.pixifyCoord(col);
+        _ent.y = _scene.pixifyCoord(row);
+        return [x,y];
+      }
+      
+//      _ent.changeGridPos = function(row, col){
+//        _ent.row = row;
+//        _ent.col = col;
+//        _ent.x = _scene.pixifyCoord(col);
+//        _ent.y = _scene.pixifyCoord(row);
+//        return [x,y];
+//      }
+      
+      _ent.checkCoordCollision = function(x,y){
+        var absx = _ent.x + _ent.scene.x;
+        var absy = _ent.y + _ent.scene.y;
+		    if(x>=absx && x<=absx+_ent.width && y>=absy && y<=absy+_ent.height){
+			    return true;
+		    }else{
+			    return false;
+		    }
+	    }
     });
     
     _scene.Button = _scene.Entity.extend(function(opt){
@@ -269,6 +282,10 @@ var Canvas2D = function(opt){
         this.super(opt);
         _image.img = opt.img;
         _image.color = opt.color;
+        if (_image.scene.type == "tiles") {
+          _image.width = _image.scene.tile.size;
+          _image.height = _image.scene.tile.size;
+        }
         return _image;
       }
       
@@ -292,26 +309,27 @@ var Canvas2D = function(opt){
         _tile.color = opt.color;
         _tile.img = opt.img;
         _tile.stroke = opt.stroke;
+        _tile.width = _scene.tile.size;
+        _tile.height = _scene.tile.size;
+        console.log(_tile.width, _tile.height);
         //_tile.draw();
-        return _tile;
+        //return _tile;
       }
         
       _tile.draw = function(){
         var absx = _tile.x + _tile.scene.x,
-            absy = _tile.y + _tile.scene.y,
-            width  = _tile.scene.tile.size,
-            height = _tile.scene.tile.size;
+            absy = _tile.y + _tile.scene.y;
         if(_tile.color){
           ctx.fillStyle = _tile.color;
-          ctx.fillRect(absx,absy,width,height);
+          ctx.fillRect(absx,absy,_tile.width,_tile.height);
         }
         if(_tile.img){
-          ctx.drawImage(_tile.img,absx,absy,width,height);
+          ctx.drawImage(_tile.img,absx,absy,_tile.width,_tile.height);
         }
         if(_tile.stroke!=false){
           ctx.lineWidth = _tile.scene.tile.stroke.thickness;
           ctx.strokeStyle = _tile.scene.tile.stroke.color;
-          ctx.strokeRect(absx,absy,width,height);
+          ctx.strokeRect(absx,absy,_tile.width,_tile.height);
         }
       }
     });
@@ -445,21 +463,22 @@ var Canvas2D = function(opt){
 	
 	function init() {	  
 	  $(canvas).bind("click", function(event) {
-	    console.log("canvas clicked");
+//	    console.log("canvas clicked");
 	    var coords = self.getMouseCoords(event);
 	    var x = coords[0]; 
 	    var y = coords[1];
       
-	    for (var i = 0; i < self.scenes.length; i++) {
+	    for (var i=0; i<self.scenes.length; i++) {
 	      var scene = self.scenes[i];
 	      if (scene.checkCoordCollision(x, y)) {
+	        console.log(scene.type);
 	        if (scene.onclick) {
 	          scene.onclick();
 	        }
-	        for (var i=0; i<scene.ents.length; i++) {
-	          var ent = scene.ents[i]
-	          if (ent.onclick) {
-	            if (ent.checkCoordCollision(x, y)) {
+	        for (var j=0; j<scene.ents.length; j++) {
+	          var ent = scene.ents[j]
+	          if (ent.checkCoordCollision(x, y)) {
+	            if (ent.onclick) {
 	              ent.onclick();
 	            }
 	          }

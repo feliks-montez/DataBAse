@@ -1,5 +1,6 @@
+var game;
 $(document).ready(function(){
-  console.log("begin");
+  //console.log("begin");
   c = $("#canvas")[0];
   ctx = c.getContext("2d");
   c.width = 1000;
