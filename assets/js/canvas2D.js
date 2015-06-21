@@ -36,6 +36,7 @@ var Canvas2D = function(opt){
 	  var _base = this;
     this.constructor = function(opt){
 	    var opt = opt || {};
+	    _base.id = opt.id;
 	    _base.x = opt.x || 0;
 	    _base.y = opt.y || 0;
 	    _base.width = opt.width || c.width;
@@ -43,7 +44,7 @@ var Canvas2D = function(opt){
 	    _base.bg = opt.bg;
 	    _base.update = opt.update || true;
 	    _base.onclick = opt.onclick || _base.onclick || undefined;
-		
+		  _base.type = opt.type || _base.type;
 	    //return _base;
     }
     
@@ -81,14 +82,6 @@ var Canvas2D = function(opt){
       return [_base.x,_base.y,_base.x+_base.width,_base.y+_base.height];
     }
 	
-	  _base.checkCoordCollision = function(x,y){
-		  if(x>=_base.x && x<=_base.x+_base.width && y>=_base.y && y<=_base.y+_base.height){
-			  return true;
-		  }else{
-			  return false;
-		  }
-	  }
-	
 	  _base.destroy = function(){
       _base.update = false;
     }
@@ -110,13 +103,15 @@ var Canvas2D = function(opt){
 	  var _scene = this;
 	  this.constructor = function(opt) {
 	    this.super(opt);
-	    _scene.type = opt.type || "menu";
+	    _scene.type = opt.type || "group";
       _scene.padding = opt.padding;
       _scene.bg = opt.bg || false;
       _scene.map = opt.map;
       _scene.tile = opt.tile;
       _scene.tiles = [];
 	    _scene.ents = [];
+	    _scene.absx = (_scene.scene || _scene).x || _scene.x;
+	    _scene.absy = _scene.y;
 	    
 	    if(_scene.update!=false){
         self.scenes.push(_scene);
@@ -145,12 +140,13 @@ var Canvas2D = function(opt){
     _scene.Entity = self.Base.extend(function(opt) {
       var _ent = this;
       this.constructor = function(opt) {
+        var opt = opt || {};
         this.super(opt);
         _ent.scene = _scene
         if (_ent.scene.type == "tiles") {
           if (opt.row != undefined && opt.col != undefined) {
             _ent.x = _scene.pixifyCoord(opt.col);
-            _ent.y = _scene.pixifyCoord(opt.row)
+            _ent.y = _scene.pixifyCoord(opt.row);
             _ent.row = opt.row;
             _ent.col = opt.col;
           } else if (opt.x != undefined && opt.y != undefined) {
@@ -175,17 +171,12 @@ var Canvas2D = function(opt){
       
       
       
-      _ent.draw = function() {
-        var absx = _ent.x + _ent.scene.x;
-        var absy = _ent.y + _ent.scene.y;
-        if(_ent.bg){
-          if(typeof _ent.bg == "string"){
-            ctx.fillStyle = _ent.bg;
-	          ctx.fillRect(absx,absy,_ent.width,_ent.height);
-          }else{
-            ctx.drawImage(_ent.bg,absx,absy,_ent.width,_ent.height);
-          }
-        }
+      _ent.draw = function(opt) {
+        var opt = opt || {};
+        _ent.x = opt.x || _ent.x;
+        _ent.y = opt.y || _ent.y;
+        _ent.absx = _ent.x + _ent.scene.absx;
+        _ent.absy = _ent.y + _ent.scene.absy;
       }
       
       _ent.getPos = function(){
@@ -227,50 +218,79 @@ var Canvas2D = function(opt){
 	    }
     });
     
-    _scene.Button = _scene.Entity.extend(function(opt){
-      var _button = this;
+    _scene.Text = _scene.Entity.extend(function(opt) {
+      var _text = this;
       this.constructor = function(opt) {
         this.super(opt);
-	      _button.text = opt.text;
-
-	      if(!opt.font){_button.font = "Arial"}else{_button.font = opt.font}
-	      if(!opt.size){_button.size = 30}else{_button.size = opt.size}
-	      if(!opt.color){_button.color = "#000"}else{_button.color = opt.color}
-	      if(!opt.padding){_button.padding = 6}else{_button.padding = opt.padding}
-	      if(!opt.centerText){_button.centerText = true}else{_button.centerText = opt.centerText}
-	      if(!opt.center){_button.center = false}else{
-		      _button.center = opt.center;
-		      if(_button.center){
-			      _button.x = canvas.width/2-_button.width/2;
-		      }
+        _text.text = opt.text || "";
+	      _text.font = opt.font || "Arial";
+	      _text.size = opt.size || 30;
+	      _text.color = opt.color;
+	      _text.padding = opt.padding || 6;
+	      _text.centerText = opt.centerText || false;
+	      _text.center = opt.center || false;
+	      _text.width = opt.width;
+	      _text.height = opt.height;
+	      
+	      return _text;
+      }
+      
+      _text.draw = function(opt){
+        this.super.draw(opt);
+        var measure = ctx.measureText(_text.text)
+        _text.width = _text.width || measure.width + _text.padding*2 || measure.width;
+        _text.height = _text.height || _text.size + _text.padding*2 || _text.size;
+        if(_text.center == true){
+		      _text.absx = _text.scene.x + _text.scene.width/2 - _text.width/2;
 	      }
+        ctx.fillStyle = _text.color;
+        ctx.font = _text.size.toString() + "px " + _text.font;
+        //ctx.fillText(_text.text,absx+_text.padding,absy+(_text.height/2+_text.size/3));
+        ctx.fillText(_text.text,_text.absx+_text.padding,_text.absy+(_text.height/2+_text.size/3));
+      }
+    });
+    
+    _scene.Button = _scene.Text.extend(function(opt){
+      var _button = this;
+      this.constructor = function(opt) {
+        //console.log(opt);
+        this.super(opt);
+	      _button.text = opt.text || "";
+	      if(_button.center){
+		      _button.x = _button.scene.width/2-_button.width/2;
+	      }
+	      
 	      return _button;
 	    }
 	    
-	    _button.draw = function(){
-        var absx = _button.x + _button.scene.x;
-        var absy = _button.y + _button.scene.y;
-        if(_button.img){
-	        ctx.drawImage(_button.img,absx,absy,_button.width,_button.height);
-        }
-
+	    _button.draw = function(opt){
+        this.super.draw(opt);
+        
         if(_button.bg){
-	        ctx.fillStyle = _button.bg;
-	        if(_button.center == true){
-		        ctx.fillRect(absx,absy,_button.width,_button.height);
-	        }
-	
-	        ctx.fillRect(absx,absy,_button.width,_button.height);
+          if (typeof _button.bg == "string") {
+	          ctx.fillStyle = _button.bg;
+	          ctx.fillRect(_button.absx,_button.absy,_button.width,_button.height);
+	        } else {
+            if(_button.color){
+              ctx.fillStyle = _button.color;
+              ctx.fillRect(_button.absx,_button.absy,width,height);
+            }
+            ctx.drawImage(_button.bg,_button.absx,_button.absy,_button.width,_button.height);
+          }
+        }
+        
+        if(_button.img){
+	        ctx.drawImage(_button.img,_button.absx,_button.absy,_button.width,_button.height);
         } 
 
-        if(_button.text){
+        if(_button.text != ""){
 	        var measure = ctx.measureText(_button.text);
 	        ctx.fillStyle = _button.color;
 	        ctx.font = _button.size.toString() + "px " + _button.font;
 	        if(_button.centerText == true){
-		        ctx.fillText(_button.text,absx+(_button.width/2-measure.width/2),absy+(_button.height/2+_button.size/3));
+		        ctx.fillText(_button.text,_button.absx+(_button.width/2-measure.width/2),_button.absy+(_button.height/2+_button.size/3));
 	        } else {
-		        ctx.fillText(_button.text,absx+_button.padding,absy+(_button.height/2+_button.size/3));
+		        ctx.fillText(_button.text,_button.absx+_button.padding,_button.absy+(_button.height/2+_button.size/3));
 	        }
         }
       }
@@ -289,16 +309,85 @@ var Canvas2D = function(opt){
         return _image;
       }
       
-      _image.draw = function(){
-        var absx   = _image.x + _image.scene.x,
-            absy   = _image.y + _image.scene.y,
-            width  = _image.scene.tile.size,
-            height = _image.scene.tile.size;
+      _image.draw = function(opt){
+        this.super.draw(opt);
         if(_image.color){
           ctx.fillStyle = _image.color;
-          ctx.fillRect(absx,absy,width,height);
+          ctx.fillRect(_image.absx,_image.absy,_image.width,_image.height);
         }
-        ctx.drawImage(_image.img,absx,absy,width,height);
+        ctx.drawImage(_image.img,_image.absx,_image.absy,_image.width,_image.height);
+      }
+    });
+    
+    _scene.List = self.Scene.extend(function(opt) {
+      var _list = this;
+      this.constructor = function(opt) {
+        this.super(opt);
+        _list.type = "list";
+        _list.scene = _scene;
+        _list.items = opt.items || [];
+        
+        return _list;
+      }
+      
+      _list.drawItems = function(){
+//        var yOffset = 1;
+        //var lastItem = undefined;
+        for(var i=0; i<_list.items.length; i++){
+          item = _list.items[i];
+          item.scene = _list;
+//          item.x = _list.absx;
+//          item.y = _list.absy + item.height * yOffset - item.height;
+          //if (lastItem != undefined) {var y = lastItem.height * y + _list.padding;}
+          if(item.draw && item.update != false){ //ok
+              item.draw({x: 0, y: item.height * i});
+          } else {
+            _list.items.splice(i, 1);
+          }
+//          yOffset++;
+        }
+      }
+      
+      _list.draw = function(opt) {
+        var opt = opt || {};
+        _list.x = opt.x || _list.x;
+        _list.y = opt.y || _list.y;
+        _list.absx = _list.x + _list.scene.absx;
+        _list.absy = _list.y + _list.scene.absy;
+        if(_list.bg){
+          if (typeof _list.bg == "string") {
+	          ctx.fillStyle = _list.bg;
+	          ctx.fillRect(_list.absx,_list.absy,_list.width,_list.height);
+	        } else {
+            if(_list.color){
+              ctx.fillStyle = _list.color;
+              ctx.fillRect(_list.absx,_list.absy,_list.width,_list.height);
+            }
+            ctx.drawImage(_list.bg,_list.absx,_list.absy,_list.width,_list.height);
+          }
+        }
+        _list.drawItems();
+      }
+      
+      _list.destroy = function() {
+        for (var i=0; i<_list.items.length; i++) {
+          _list.items[i].destroy();
+        }
+        _list.items = [];
+        _list.update = false;
+      }
+    });
+    
+    _scene.Group = self.Scene.extend(function(opt) {
+      var _group = this;
+      this.constructor = function(opt) {
+        this.super(opt);
+        _group.type = "group";
+        _group.scene = _scene;
+        _group.absx = _group.x + _group.scene.absx,
+        _group.absy = _group.y + _group.scene.absy;
+        
+        return _group;
       }
     });
     
@@ -311,25 +400,26 @@ var Canvas2D = function(opt){
         _tile.stroke = opt.stroke;
         _tile.width = _scene.tile.size;
         _tile.height = _scene.tile.size;
-        console.log(_tile.width, _tile.height);
+        _tile.type = "tile";
         //_tile.draw();
         //return _tile;
       }
         
-      _tile.draw = function(){
-        var absx = _tile.x + _tile.scene.x,
-            absy = _tile.y + _tile.scene.y;
+      _tile.draw = function(opt){
+        this.super.draw(opt);
+        
+        
         if(_tile.color){
           ctx.fillStyle = _tile.color;
-          ctx.fillRect(absx,absy,_tile.width,_tile.height);
+          ctx.fillRect(_tile.absx,_tile.absy,_tile.width,_tile.height);
         }
         if(_tile.img){
-          ctx.drawImage(_tile.img,absx,absy,_tile.width,_tile.height);
+          ctx.drawImage(_tile.img,_tile.absx,_tile.absy,_tile.width,_tile.height);
         }
         if(_tile.stroke!=false){
           ctx.lineWidth = _tile.scene.tile.stroke.thickness;
           ctx.strokeStyle = _tile.scene.tile.stroke.color;
-          ctx.strokeRect(absx,absy,_tile.width,_tile.height);
+          ctx.strokeRect(_tile.absx,_tile.absy,_tile.width,_tile.height);
         }
       }
     });
@@ -347,6 +437,14 @@ var Canvas2D = function(opt){
         }
       }
     }
+    
+    _scene.checkCoordCollision = function(x,y){
+		  if(x>=_scene.absx && x<=_scene.absx+_scene.width && y>=_scene.absy && y<=_scene.absy+_scene.height){
+			  return true;
+		  }else{
+			  return false;
+		  }
+	  }
     
     _scene.mapifyCoord = function(px){
       //row = Math.floor((y-((y/tiles.size)*tiles.margin)-padding)/tiles.size);
@@ -379,17 +477,36 @@ var Canvas2D = function(opt){
       }
     }
       
-    _scene.draw = function() {
+    _scene.draw = function(opt) {
+//      _scene.absx = _scene.x;
+//	    _scene.absy = _scene.y;
+	    
+	    var opt = opt || {};
+      _scene.x = opt.x || _scene.x;
+      _scene.y = opt.y || _scene.y;
+      
+      _scene.scene = _scene.scene || {};
+      _scene.absx = _scene.x + (_scene.scene.absx || 0);
+      _scene.absy = _scene.y + (_scene.scene.absy || 0);
+    
       if(_scene.bg){
         if(typeof _scene.bg == "string"){
           ctx.fillStyle = _scene.bg;
           //console.log(_scene.x,_scene.y,_scene.width,_scene.height,_scene.bg);
-		      ctx.fillRect(_scene.x,_scene.y,_scene.width,_scene.height);
+		      ctx.fillRect(_scene.absx,_scene.absy,_scene.width,_scene.height);
         }else{
-          ctx.drawImage(_scene.bg,_scene.x,_scene.y,_scene.width,_scene.height);
+          ctx.drawImage(_scene.bg,_scene.absx,_scene.absx,_scene.width,_scene.height);
         }
       }
       _scene.drawEnts();
+    }
+    
+    _scene.destroy = function() {
+      for (var i=0; i<_scene.ents.length; i++) {
+        _scene.ents[i].destroy();
+      }
+      _scene.ents = [];
+      _scene.update = false;
     }
 	});
 	
@@ -461,8 +578,10 @@ var Canvas2D = function(opt){
 	  $(canvas).unbind("click");
 	}
 	
-	function init() {	  
+	function init() {
 	  $(canvas).bind("click", function(event) {
+	    self.checkingEvents = true;
+	    var onclickEnts = [];
 //	    console.log("canvas clicked");
 	    var coords = self.getMouseCoords(event);
 	    var x = coords[0]; 
@@ -473,17 +592,23 @@ var Canvas2D = function(opt){
 	      if (scene.checkCoordCollision(x, y)) {
 	        console.log(scene.type);
 	        if (scene.onclick) {
-	          scene.onclick();
+	          onclickEnts.push(scene);
 	        }
 	        for (var j=0; j<scene.ents.length; j++) {
 	          var ent = scene.ents[j]
 	          if (ent.checkCoordCollision(x, y)) {
+	            console.log(ent);
 	            if (ent.onclick) {
-	              ent.onclick();
+	              onclickEnts.push(ent);
 	            }
 	          }
 	        }
         }
+	    }
+	    self.checkingEvents = false;
+	    for (var i=0; i<onclickEnts.length; i++) {
+	      var ent = onclickEnts[i];
+	      ent.onclick({target: ent});
 	    }
 	  });
 	  self.update();

@@ -33,6 +33,18 @@ Level = function(){
       [1,1,0,1,1,1,0,1,1,1,1,1],
       [1,1,1,0,1,1,1,1,1,0,1,1]
     ]
+    
+    var map = [
+      [1,1,1,1,1,1,0,0,1,1,0,1],
+      [1,1,1,0,1,1,1,0,0,1,1,1],
+      [1,0,1,1,1,1,1,1,0,1,1,1],
+      [1,1,1,1,1,0,1,1,1,1,1,1],
+      [0,1,1,1,1,0,1,1,1,1,1,1],
+      [0,1,1,1,1,0,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0,1,1,1,1,1],
+      [1,1,0,1,1,1,0,1,1,1,1,1],
+      [1,1,1,0,1,1,1,1,1,0,1,1]
+    ]
   
   if((Math.round($(document).height()-150)/map.length) <= Math.round(($(document).width()-150)/map[0].length)){
     var tileSize = Math.round(($(document).height()-150)/map.length);
@@ -42,7 +54,8 @@ Level = function(){
   
   gameScene = new game.Scene({
     type: "tiles",
-    bg: $("#hyperspace-binary")[0],
+    //bg: $("#hyperspace-binary")[0],
+    bg: $("#electric-path")[0],
     padding: padding = 20,
     map: map,
     width: c.width - 200,
@@ -71,83 +84,66 @@ Level = function(){
       this.super(opt);
       _program.width = tileSize;
       _program.height = tileSize;
-		  _program.moves = opt.moves;
-		  _program.range = opt.range;
-		  _program.damage = opt.damage;
-		  _program.maxSize = opt.maxSize;
-		  if (opt.size != undefined) {
-		    _program.size = opt.size;
-		  } else {
-		    _program.size = 1;
-		  }
+	    _program.moves = opt.moves;
+	    _program.range = opt.range;
+	    _program.damage = opt.damage;
+	    _program.maxSize = opt.maxSize;
+	    _program.size = opt.size || 1;
       _program.curRow = function(){return _program.getPos()[0];}
       _program.curCol = function(){return _program.getPos()[1];}
-      var trail = function(){
-         
-      }
       return _program;
     }
     
-    _program.moveTiles = function(){
-	    var moveTiles = [];
-		  for(tRow in map){
-			  for(tCol in map[tRow]){
-				  rowDif = Math.abs(tRow-_program.curRow());
-				  colDif = Math.abs(tCol-_program.curCol());
-				  if(rowDif+colDif <= _program.movesLeft && rowDif+colDif != 0){
-				    if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
-					    moveTiles.push([parseInt(tRow),parseInt(tCol)]);
-					  }
-				  }
-			  }
-		  }
-		  return moveTiles;
-	  }
-	  _program.attackTiles = function(){
-	    var attackTiles = [];
-		  for(tRow in map){
-			  for(tCol in map[tRow]){
-				  rowDif = Math.abs(tRow-_program.curRow());
-				  colDif = Math.abs(tCol-_program.curCol());
-				  if(rowDif+colDif <= _program.range && rowDif+colDif != 0){
-				    if(map[tRow][tCol] != 0){// && [tRow,tCol] != [_program.curRow(),_program.curCol()]){
-					    attackTiles.push([parseInt(tRow),parseInt(tCol)]);
-					  }
-				  }
-			  }
-		  }
-		  return attackTiles;
+    _program.sectors = function() {
+      
     }
-    /*_program.adjacentTiles = function(){return {
-      upTile: map[_program.curRow()-1][_program.curCol()],
-      downTile: map[_program.curRow()+1][_program.curCol()],
-      leftTile: map[_program.curRow()][_program.curCol()-1],
-      rightTile: map[_program.curRow()][_program.curCol()+1]
-    }};
     
-    _program.adjacentTiles = function(){
-      var adjacentTiles = [];
-      adjacentTiles.push([_program.curRow()-1,_program.curCol()]);
-      adjacentTiles.push([_program.curRow()+1,_program.curCol()]);
-      adjacentTiles.push([_program.curRow(),_program.curCol()-1]);
-      adjacentTiles.push([_program.curRow(),_program.curCol()+1]);
-      return adjacentTiles;
-    };*/
+    _program.moveTiles = function(){
+      var moveTiles = [];
+	    for(tRow in map){
+		    for(tCol in map[tRow]){
+			    rowDif = Math.abs(tRow-_program.curRow());
+			    colDif = Math.abs(tCol-_program.curCol());
+			    if(rowDif+colDif <= _program.movesLeft && rowDif+colDif != 0){
+			      if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
+				      moveTiles.push([parseInt(tRow),parseInt(tCol)]);
+				    }
+			    }
+		    }
+	    }
+	    return moveTiles;
+    }
+    _program.attackTiles = function(){
+      var attackTiles = [];
+	    for(tRow in map){
+		    for(tCol in map[tRow]){
+			    rowDif = Math.abs(tRow-_program.curRow());
+			    colDif = Math.abs(tCol-_program.curCol());
+			    if(rowDif+colDif <= _program.range && rowDif+colDif != 0){
+			      if(map[tRow][tCol] != 0){// && [tRow,tCol] != [_program.curRow(),_program.curCol()]){
+				      attackTiles.push([parseInt(tRow),parseInt(tCol)]);
+				    }
+			    }
+		    }
+	    }
+	    return attackTiles;
+    }
+    
     _program.adjTiles = function(){
-	    var adjTiles = [];
-		  for(tRow in map){
-			  for(tCol in map[tRow]){
-				  rowDif = Math.abs(tRow-_program.curRow());
-				  colDif = Math.abs(tCol-_program.curCol());
-				  if(rowDif+colDif <= 1 && rowDif+colDif != 0){
-				    if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
-					    adjTiles.push([parseInt(tRow),parseInt(tCol)]);
-					  }
-				  }
-			  }
-		  }
-		  return adjTiles;
-	  }
+      var adjTiles = [];
+	    for(tRow in map){
+		    for(tCol in map[tRow]){
+			    rowDif = Math.abs(tRow-_program.curRow());
+			    colDif = Math.abs(tCol-_program.curCol());
+			    if(rowDif+colDif <= 1 && rowDif+colDif != 0){
+			      if(map[tRow][tCol] != 0){ //&& tRow != _program.curRow() && tCol != _program.curCol()){
+				      adjTiles.push([parseInt(tRow),parseInt(tCol)]);
+				    }
+			    }
+		    }
+	    }
+	    return adjTiles;
+    }
     
     _program.drawMoveTiles = function() {
       _program.clearMoveTiles();
@@ -259,23 +255,184 @@ Level = function(){
       }
     };
   });
+
+  /*Chrome = Program.extend(function(opt) {
+    this.constructor = function(opt) {
+      this.super(opt);
+      this.img = $("#chrome")[0];
+      this.color = opt.team || "rgba(160,220,50,255)";
+      this.moves = 1;
+      this.range = 2;
+      this.damage = 1;
+      this.maxSize = 2;
+    }
+  });
+
+  Hadoop = Program.extend(function(opt) {
+    this.constructor = function(opt) {
+      this.super(opt);
+      this.img = $("#hadoop")[0];
+      this.color = opt.team || "rgba(60,60,220,255)";
+      this.moves = 2;
+      this.range = 1;
+      this.damage = 2;
+      this.maxSize = 30;
+    }
+  });
+
+  Processor = Program.extend(function(opt) {
+    this.constructor = function(opt) {
+      this.super(opt);
+      this.img = $("#processor")[0];
+      this.color = opt.team || "rgba(250,100,50,255)";
+      this.moves = 3;
+      this.range = 1;
+      this.damage = 1;
+      this.maxSize = 1;
+    }
+  });*/
+
+  var programs = {
+    'chrome': {
+      img: $("#chrome")[0],
+      color: "rgba(160,220,50,255)",
+      moves: 1,
+      range: 2,
+      damage: 1,
+      maxSize: 2,
+      col: 1,
+      row: 1
+    },
+    'processor': {
+      img: $("#processor")[0],
+      color: "rgba(250,100,50,255)",
+      moves: 3,
+      range: 1,
+      damage: 1,
+      maxSize: 1,
+      col: 10,
+      row: 7
+    },
+    'hadoop': {
+      img: $("#hadoop")[0],
+      color: "rgba(60,60,220,255)",
+      moves: 2,
+      range: 1,
+      damage: 2, // = number of sectors
+      maxSize: 30,
+      size: 2,
+      col: 6,
+      row: 3
+    },
+    'ubuntu': {
+      img: $("#ubuntu")[0],
+      color: "rgba(100,40,100,255)",
+      moves: 2,
+      range: 2,
+      damage: 1, // = number of sectors
+      maxSize: 3,
+      size: 1,
+      col: 6,
+      row: 3
+    },
+    'apple': {
+      img: $("#apple")[0],
+      color: "rgba(255,255,255,255)",
+      moves: 0,
+      range: 3,
+      damage: 1, // = number of sectors
+      maxSize: 1,
+      size: 1,
+      col: 6,
+      row: 3
+    }
+  };
   
   var attack = function(tile) {
-      var row = tile.row;
-      var col = tile.col;
-      for (var i=0; i<gameScene.ents.length; i++) {
-        var ent = gameScene.ents[i];
-        //console.log(ent);
-        if (ent.size && ent.row == row && ent.col == col) {
-          ent.size -= selectedProgram.damage;
-          if (ent.size <= 0) {
-            ent.destroy();
-          }
+    var row = tile.row;
+    var col = tile.col;
+    for (var i=0; i<gameScene.ents.length; i++) {
+      var ent = gameScene.ents[i];
+      //console.log(ent);
+      if (ent.size && ent.row == row && ent.col == col) {
+        ent.size -= selectedProgram.damage;
+        if (ent.size <= 0) {
+          ent.destroy();
         }
       }
-      selectedProgram.clearAttackTiles();
-      selectedProgram = null;
-    };
+    }
+    selectedProgram.clearAttackTiles();
+    selectedProgram = null;
+  };
+    
+  var selectSpawn = function(spawn) {
+    spawnMenu = new game.Scene({
+      type: "menu",
+      x: canvas.width/2 - 150,
+      y: canvas.height/2 - 200,
+      width: 300,
+      height: 400,
+      bg: "#111"
+    });
+    var title = new spawnMenu.Text({
+      text: "Select Program",
+      x: 0,
+      y: 0,
+      center: true,
+      padding: 8,
+      color: "#fff"
+    });
+    
+    var listItems = [];
+    
+    for (p in programs) {
+      var item = new spawnMenu.Group({
+        id: p,
+        x: 0,
+        y: 0,
+        width: 300,
+        height: 60,
+        onclick: function(event) {
+          var opt = programs[event.target.id];
+          opt.row = spawn.row;
+          opt.col = spawn.col;
+          var program = new Program(opt);
+          spawnMenu.destroy();
+          programList.destroy();
+          spawn.destroy();
+        }
+      });
+      
+      var img = new item.Image({
+        id: p,
+        x: 0,
+        y: 0,
+        width: 55,
+        height: 55,
+        img: programs[p].img
+      });
+      
+      var text = new item.Text({
+        text: p,
+        color: "#fff",
+        x: 60,
+        y: 0
+      });
+      
+      listItems.push(item);
+    }
+    
+    programList = new spawnMenu.List({
+      x: 0,
+      y: 60,
+      width: 300,
+      items: listItems
+    });
+    
+    var returnProgramKey = function(key) {
+      return key;
+    }
+  };
   
   /*audioBg = new game.Audio({
     audio: $("#audio-bg")[0],
@@ -283,90 +440,64 @@ Level = function(){
     loop: true
   });*/
   
-  /*var evergreen = new game.Image({
-    img: $("#evergreen")[0],
-    x: 5*tileSize + 5*tileMargin + padding,
-    y: 5*tileSize + 5*tileMargin + padding
-  });*/
+  var Spawn = gameScene.Image.extend(function(opt) {
+    var _spawn = this;
+    this.constructor = function(opt) {
+      this.super(opt);
+      _spawn.team = opt.team || "blue";
+      if (_spawn.team == "blue") {
+        _spawn.img = $("#spawn-blue")[0];
+      } else if (_spawn.team == "red") {
+        _spawn.img = $("#spawn-red")[0];
+      }
+    }
+    
+    _spawn.onclick = function() {
+      selectSpawn(this);
+    }
+  });
   
   
-  
-  var spawnBlue1 = new gameScene.Image({
-    img: $("#spawn-blue")[0],
-    bg: "#66ff66",
-    col: 0,
+  var spawnBlue1 = new Spawn({
+    team: "blue",
+    col: 1,
     row: 0
   });
-  var spawnBlue2 = new gameScene.Image({
-    img: $("#spawn-blue")[0],
+  var spawnBlue2 = new Spawn({
+    team: "blue",
     col: 0,
     row: 1
   });
-  var spawnBlue3 = new gameScene.Image({
-    img: $("#spawn-blue")[0],
+  var spawnBlue3 = new Spawn({
+    team: "blue",
     col: 0,
     row: 2
   });
   
-  var spawnRed1 = new gameScene.Image({
-    img: $("#spawn-red")[0],
+  var spawnRed1 = new Spawn({
+    team: "red",
     col: map[0].length-1,
     row: map.length-1
   });
-  var spawnRed2 = new gameScene.Image({
-    img: $("#spawn-red")[0],
+  var spawnRed2 = new Spawn({
+    team: "red",
     col: map[0].length-1,
     row: map.length-2
   });
-  var spawnRed3 = new gameScene.Image({
-    img: $("#spawn-red")[0],
+  var spawnRed3 = new Spawn({
+    team: "red",
     col: map[0].length-1,
     row: map.length-3
   });
   
-  chrome = new Program({
-    img: $("#chrome")[0],
-    color: "rgba(160,220,50,255)",
-    moves: 1,
-    range: 2,
-    damage: 1,
-    maxSize: 2,
-    col: 1,
-    row: 1
-  });
-  
-  processor = new Program({
-    img: $("#processor")[0],
-    color: "rgba(250,100,50,255)",
-    moves: 3,
-    range: 1,
-    damage: 1,
-    maxSize: 1,
-    col: 10,
-    row: 7
-  });
-  
-  hadoop = new Program({
-    img: $("#hadoop")[0],
-    color: "rgba(60,60,220,255)",
-    moves: 2,
-    range: 1,
-    damage: 2, // = number of sectors
-    maxSize: 30,
-    size: 2,
-    col: 6,
-    row: 3
-  });
-  
-  //$(c).click(function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
-//  game.keyDown(32, function(){audioBg.playOrPause();})
-//  game.keyDown(37, function(){chrome.move(180,tileSize);});
-//  game.keyDown(39, function(){chrome.move(0,tileSize);});
-//  game.keyDown(38, function(){chrome.move(270,tileSize);});
-//  game.keyDown(40, function(){chrome.move(90,tileSize);});
-//  game.keyDown(68, function(){for(mt in mts){mts[mt].destroy();delete mts[mt];}});
+  game.keyDown(32, function(){audioBg.playOrPause();})
+  game.keyDown(37, function(){chrome.move(180,tileSize);});
+  game.keyDown(39, function(){chrome.move(0,tileSize);});
+  game.keyDown(38, function(){chrome.move(270,tileSize);});
+  game.keyDown(40, function(){chrome.move(90,tileSize);});
   
   sideMenu = new game.Scene({
+    type: "menu",
     x: width-200,
     y: 0,
     width: 200,
@@ -383,7 +514,7 @@ Level = function(){
 		bg: "#111",
 		center: false,
 		centerText: false,
-		text: "Menu",
+		text: "Main Menu",
 		onclick: function(){
 		  gameScene.destroy();
 		  sideMenu.destroy();
@@ -400,11 +531,28 @@ Level = function(){
 		bg: "#111",
 		center: false,
 		centerText: false,
-		text: "ATTACK!!!",
+		text: "Attack",
 		onclick: function(){
 		  selectedProgram.clearMoveTiles();
 		  selectedProgram.clearAdjacentTiles();
 		  selectedProgram.drawAttackTiles();
+		}
+	});
+	
+	var moveBtn = new sideMenu.Button({
+    x: 0,
+		y: 100,
+		width: 200,
+		height: 50,
+		color: "#eee",
+		bg: "#111",
+		center: false,
+		centerText: false,
+		text: "Move",
+		onclick: function(){
+		  selectedProgram.clearAttackTiles();
+		  selectedProgram.drawMoveTiles();
+      selectedProgram.drawAdjacentTiles();
 		}
 	});
 }

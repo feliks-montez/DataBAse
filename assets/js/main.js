@@ -1,6 +1,5 @@
 var game;
 $(document).ready(function(){
-  //console.log("begin");
   c = $("#canvas")[0];
   ctx = c.getContext("2d");
   c.width = 1000;
@@ -13,14 +12,13 @@ $(document).ready(function(){
     height: c.height,
     width: c.width
   });
-		
 	drawMainMenu();
-	//drawGame();
 });
 
 function drawMainMenu(){
   mainMenu = new game.Scene({
-	  bg: $("#hyperspace-binary")[0]
+    type: "menu",
+	  bg: $("#electric-path")[0]
 	});
 	
 	btnPlay = new mainMenu.Button({
@@ -31,7 +29,7 @@ function drawMainMenu(){
 		color: "#eee",
 		bg: "#111",
 		center: true,
-		centerText: false,
+		centerText: true,
 		text: "Play",
 		onclick: drawGame
 	});
@@ -44,6 +42,7 @@ function drawMainMenu(){
 		color: "#eee",
 		bg: "#111",
 		center: true,
+		centerText: true,
 		text: "Help",
 		onclick: function() {alert("Help!")}
 	});
